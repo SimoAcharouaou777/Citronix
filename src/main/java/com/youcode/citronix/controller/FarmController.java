@@ -2,6 +2,7 @@ package com.youcode.citronix.controller;
 
 import com.youcode.citronix.dto.FarmDTO;
 import com.youcode.citronix.service.FarmServiceImpl;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -19,7 +20,7 @@ public class FarmController {
     private FarmServiceImpl farmServiceImpl;
 
     @PostMapping
-    public ResponseEntity<FarmDTO> createFarm(@RequestBody FarmDTO farmDTO){
+    public ResponseEntity<FarmDTO> createFarm(@Valid @RequestBody FarmDTO farmDTO){
         FarmDTO createdFarm = farmServiceImpl.createFarm(farmDTO);
         return new ResponseEntity<>(createdFarm, HttpStatus.CREATED);
     }
@@ -37,7 +38,7 @@ public class FarmController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<FarmDTO> updateFarm(@PathVariable Long id, @RequestBody FarmDTO farmDTO){
+    public ResponseEntity<FarmDTO> updateFarm(@PathVariable Long id, @Valid @RequestBody FarmDTO farmDTO){
         FarmDTO updatedFarm = farmServiceImpl.updateFarm(id, farmDTO);
         return new ResponseEntity<>(updatedFarm, HttpStatus.OK);
     }
