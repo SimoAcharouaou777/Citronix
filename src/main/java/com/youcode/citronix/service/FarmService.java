@@ -39,7 +39,7 @@ public class FarmService {
         existingFarm.setName(farmDTO.getName());
         existingFarm.setLocation(farmDTO.getLocation());
         existingFarm.setSize(farmDTO.getSize());
-        existingFarm.setCreationDate(LocalDate.parse(farmDTO.getCreationDate()));
+        existingFarm.setCreationDate(farmDTO.getCreationDate());
 
         Farm updatedFarm = farmRepository.save(existingFarm);
         return farmMapper.farmToFarmDTO(updatedFarm);
