@@ -3,6 +3,8 @@ package com.youcode.citronix.dto;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 public class FarmDTO {
@@ -10,5 +12,5 @@ public class FarmDTO {
     private String name;
     private String location;
     private Double size;
-    private String creationDate;
+    private LocalDate creationDate;
 }
