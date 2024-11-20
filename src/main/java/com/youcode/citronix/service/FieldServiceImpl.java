@@ -40,6 +40,7 @@ public class FieldServiceImpl implements FieldService {
          return fieldMapper.fieldsToFieldDTOs(fields);
     }
 
+
     @Override
     public FieldDTO getFieldById(Long id) {
         Field field = fieldRepository.findById(id)
