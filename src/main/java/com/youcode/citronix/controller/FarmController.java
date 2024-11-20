@@ -18,13 +18,11 @@ public class FarmController {
     @Autowired
     private FarmServiceImpl farmServiceImpl;
 
-
     @PostMapping
     public ResponseEntity<FarmDTO> createFarm(@RequestBody FarmDTO farmDTO){
         FarmDTO createdFarm = farmServiceImpl.createFarm(farmDTO);
         return new ResponseEntity<>(createdFarm, HttpStatus.CREATED);
     }
-
 
     @GetMapping
     public ResponseEntity<List<FarmDTO>> getAllFarms(){
