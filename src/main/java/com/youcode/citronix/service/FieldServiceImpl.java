@@ -27,6 +27,15 @@ public class FieldServiceImpl implements FieldService {
     public FieldDTO createField(Long id , FieldDTO fieldDTO) {
         Farm farm = farmRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Farm not found"));
+
+        double totalFieldSize = fieldRepository.findByFarmId(id).stream()
+                .mapToDouble(Field::getSize)
+                .sum();
+
+        if(totalFieldSize + fieldDTO.getSize() > farm.getSize()){
+            throw new RuntimeException("Field size exceeds the available farm size");
+        }
+
         Field field = fieldMapper.fieldDTOToField(fieldDTO);
         field.setFarm(farm);
 
@@ -49,11 +58,19 @@ public class FieldServiceImpl implements FieldService {
     }
 
     @Override
-    public FieldDTO updateField(Long id, FieldDTO fieldDTO) {
-        Field field = fieldRepository.findById(id)
+    public FieldDTO updateField(Long fieldId, Long farmId, FieldDTO fieldDTO) {
+        Field field = fieldRepository.findById(fieldId)
                 .orElseThrow(() -> new RuntimeException("Field not found"));
-        Farm farm = farmRepository.findById(fieldDTO.getFarmId())
+        Farm farm = farmRepository.findById(farmId)
                 .orElseThrow(() -> new RuntimeException("Farm not found"));
+
+        double existingFieldSize = fieldRepository.findByFarmId(farmId).stream()
+                        .filter(f -> !f.getId().equals(fieldId))
+                                .mapToDouble(Field::getSize)
+                                        .sum();
+        if(existingFieldSize + fieldDTO.getSize() > farm.getSize()){
+            throw new RuntimeException("Field size exceeds the available farm size");
+        }
         field.setFarm(farm);
         field.setSize(fieldDTO.getSize());
 

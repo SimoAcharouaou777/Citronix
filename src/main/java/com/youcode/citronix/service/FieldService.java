@@ -14,7 +14,7 @@ public interface FieldService {
 
     FieldDTO getFieldById(Long id);
 
-    FieldDTO updateField(Long id, FieldDTO fieldDTO);
+    FieldDTO updateField(Long fieldId, Long farmId, FieldDTO fieldDTO);
 
     void deleteField(Long id);
 }

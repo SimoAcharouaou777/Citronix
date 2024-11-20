@@ -2,6 +2,7 @@ package com.youcode.citronix.controller;
 
 import com.youcode.citronix.dto.FieldDTO;
 import com.youcode.citronix.service.FieldServiceImpl;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ public class FieldController {
     private  FieldServiceImpl fieldServiceImpl;
 
     @PostMapping("/{id}")
-    public ResponseEntity<FieldDTO> createField(@PathVariable Long id ,@RequestBody FieldDTO fieldDTO){
+    public ResponseEntity<FieldDTO> createField(@PathVariable Long id ,@Valid @RequestBody FieldDTO fieldDTO){
         FieldDTO createdField = fieldServiceImpl.createField(id,fieldDTO);
         return new ResponseEntity<>(createdField, HttpStatus.CREATED);
     }
@@ -31,9 +32,10 @@ public class FieldController {
         FieldDTO field = fieldServiceImpl.getFieldById(id);
         return new ResponseEntity<>(field, HttpStatus.OK);
     }
-    @PutMapping("/{id}")
-    public ResponseEntity<FieldDTO> updateField(@PathVariable Long id, @RequestBody FieldDTO fieldDTO){
-        FieldDTO updatedField = fieldServiceImpl.updateField(id, fieldDTO);
+    @PutMapping("/{fieldId}/{farmId}")
+    public ResponseEntity<FieldDTO> updateField(@PathVariable Long fieldId, @PathVariable Long farmId , @Valid @RequestBody FieldDTO fieldDTO){
+
+        FieldDTO updatedField = fieldServiceImpl.updateField(fieldId, farmId,fieldDTO);
         return new ResponseEntity<>(updatedField, HttpStatus.OK);
     }
     @DeleteMapping("/{id}")
