@@ -24,6 +24,7 @@ public class FarmController {
         return new ResponseEntity<>(createdFarm, HttpStatus.CREATED);
     }
 
+
     @GetMapping
     public ResponseEntity<List<FarmDTO>> getAllFarms(){
         List<FarmDTO> farms = farmServiceImpl.getAllFarms();
