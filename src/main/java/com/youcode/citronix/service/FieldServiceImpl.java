@@ -40,6 +40,10 @@ public class FieldServiceImpl implements FieldService {
             throw new RuntimeException("Field size exceeds the available farm size");
         }
 
+        if(fieldDTO.getSize() > farm.getSize() * 0.5){
+            throw new RuntimeException("Field size cannot exceed 50% of the farm size");
+        }
+
         Field field = fieldMapper.fieldDTOToField(fieldDTO);
         field.setFarm(farm);
 
@@ -80,6 +84,11 @@ public class FieldServiceImpl implements FieldService {
         if(existingFieldSize + fieldDTO.getSize() > farm.getSize()){
             throw new RuntimeException("Field size exceeds the available farm size");
         }
+
+        if(fieldDTO.getSize() > farm.getSize() * 0.5){
+            throw new RuntimeException("Field size cannot exceed 50% of the farm size");
+        }
+
         field.setFarm(farm);
         field.setSize(fieldDTO.getSize());
 
