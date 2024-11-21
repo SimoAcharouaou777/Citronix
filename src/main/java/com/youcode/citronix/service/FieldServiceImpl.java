@@ -28,6 +28,10 @@ public class FieldServiceImpl implements FieldService {
         Farm farm = farmRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Farm not found"));
 
+        long fieldCount = fieldRepository.countByFarmId(id);
+        if(fieldCount >= 10){
+            throw new RuntimeException("A farm can have a maximum of 10 fields");
+        }
         double totalFieldSize = fieldRepository.findByFarmId(id).stream()
                 .mapToDouble(Field::getSize)
                 .sum();
@@ -63,6 +67,11 @@ public class FieldServiceImpl implements FieldService {
                 .orElseThrow(() -> new RuntimeException("Field not found"));
         Farm farm = farmRepository.findById(farmId)
                 .orElseThrow(() -> new RuntimeException("Farm not found"));
+
+        long fieldCount = fieldRepository.countByFarmId(farmId);
+        if(fieldCount >= 10){
+            throw new RuntimeException("A farm can have a maximum of 10 fields");
+        }
 
         double existingFieldSize = fieldRepository.findByFarmId(farmId).stream()
                         .filter(f -> !f.getId().equals(fieldId))
