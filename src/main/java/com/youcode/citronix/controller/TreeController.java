@@ -29,7 +29,7 @@ public class TreeController {
         return new ResponseEntity<>(trees, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{treeId}")
     public ResponseEntity<TreeDTO> getTreeById(@PathVariable Long treeId){
         TreeDTO tree = treeServiceImpl.getTreeById(treeId);
         return new ResponseEntity<>(tree, HttpStatus.OK);

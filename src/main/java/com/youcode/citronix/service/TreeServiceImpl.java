@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.Month;
 import java.time.Period;
 import java.util.List;
 
@@ -31,6 +32,15 @@ public class TreeServiceImpl implements TreeService{
     public TreeDTO createTree(Long FieldId, TreeDTO treeDTO) {
         Field field = fieldRepository.findById(FieldId)
                 .orElseThrow(() -> new RuntimeException("Field not found"));
+
+        validatePlantingDate(treeDTO.getPlantingDate());
+
+        long currentTreeCount = treeRepository.countByFieldId(field.getId());
+        double maxTreeCount = field.getSize() * 100;
+        if(currentTreeCount + 1 > maxTreeCount){
+            throw new RuntimeException("Tree count exceeds the maximum density of 100 trees per hectare for this field");
+        }
+
         Tree tree = treeMapper.treeDTOToTree(treeDTO);
         tree.setField(field);
 
@@ -53,9 +63,20 @@ public class TreeServiceImpl implements TreeService{
         Tree tree = treeRepository.findById(treeId)
                 .orElseThrow(() -> new RuntimeException("Tree not found"));
 
+        Field field = fieldRepository.findById(treeDTO.getFieldId())
+                .orElseThrow(() -> new RuntimeException("Field not found"));
+
+        validatePlantingDate(treeDTO.getPlantingDate());
+
+        long currentTreeCount = treeRepository.countByFieldId(treeDTO.getFieldId()) -1;
+        double maxTreeCount = field.getSize() * 100;
+
+        if(currentTreeCount + 1 > maxTreeCount){
+            throw new RuntimeException("Tree count exceeds the maximum density of 100 trees per hectare for this field");
+        }
+
         tree.setPlantingDate(treeDTO.getPlantingDate());
-        tree.setField(fieldRepository.findById(treeDTO.getFieldId())
-                .orElseThrow(() -> new RuntimeException("Field not found")));
+        tree.setField(field);
         tree.setAge(calculateAge(tree.getPlantingDate()));
         tree.setProductivityRate(calculateProductivityRate(tree.getAge()));
 
@@ -88,12 +109,24 @@ public class TreeServiceImpl implements TreeService{
         if(age == null){
             throw new IllegalArgumentException("Age cannot be null");
         }
-        if(age < 3){
+        if(age > 20){
+            return 0.0;
+        }
+        else if(age < 3){
             return 2.5;
         } else if (age >= 3 && age <= 10) {
             return 12.0;
         }else {
             return 20.0;
+        }
+    }
+    private void validatePlantingDate(LocalDate plantingDate){
+        if(plantingDate == null){
+            throw new IllegalArgumentException("Planting date cannot be null");
+        }
+        Month plantingMonth = plantingDate.getMonth();
+        if (plantingMonth != Month.MARCH && plantingMonth != Month.APRIL && plantingMonth != Month.MAY){
+            throw new RuntimeException("Planting date must be between March and May");
         }
     }
 }
