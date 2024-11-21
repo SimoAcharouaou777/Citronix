@@ -20,12 +20,12 @@ public class Tree {
     @JoinColumn(name = "field_id" , nullable = false)
     private Field field;
 
-    @Column(name = "plantingDate" , nullable = false)
+    @Column(name = "planting_date" , nullable = false)
     private LocalDate plantingDate;
 
     @Column(name = "age" , nullable = false)
     private Integer age;
 
-    @Column(name = "productivityRate" , nullable = false)
+    @Column(name = "productivity_rate" , nullable = false)
     private Double productivityRate;
 }
