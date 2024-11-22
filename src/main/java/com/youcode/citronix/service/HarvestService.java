@@ -17,5 +17,5 @@ public interface HarvestService {
 
     void deleteHarvest(Long id);
 
-
+    List<HarvestVM> getHarvestsByFieldId(Long fieldId);
 }

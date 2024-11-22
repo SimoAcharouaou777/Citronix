@@ -16,36 +16,42 @@ import java.util.List;
 public class HarvestController {
 
     @Autowired
-    private HarvestServiceImpl harvestServiceImpl;
+    private HarvestService harvestService;
 
     @PostMapping
     public ResponseEntity<HarvestVM> createHarvest(@RequestBody HarvestVM harvestVM){
-        HarvestVM createdHarvest = harvestServiceImpl.createHarvest(harvestVM);
+        HarvestVM createdHarvest = harvestService.createHarvest(harvestVM);
         return new ResponseEntity<>(createdHarvest, HttpStatus.CREATED);
     }
 
     @GetMapping
     public ResponseEntity<List<HarvestVM>> getAllHarvests(){
-        List<HarvestVM> harvests = harvestServiceImpl.getAllHarvests();
+        List<HarvestVM> harvests = harvestService.getAllHarvests();
         return new ResponseEntity<>(harvests, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<HarvestVM> getHarvestById(@PathVariable Long id){
-        HarvestVM harvest = harvestServiceImpl.getHarvestById(id);
+        HarvestVM harvest = harvestService.getHarvestById(id);
         return new ResponseEntity<>(harvest, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<HarvestVM> updateHarvest(@PathVariable Long id, @RequestBody HarvestVM harvestVM){
-        HarvestVM updatedHarvest = harvestServiceImpl.updateHarvest(id,harvestVM);
+        HarvestVM updatedHarvest = harvestService.updateHarvest(id,harvestVM);
         return new ResponseEntity<>(updatedHarvest, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteHarvest(@PathVariable Long id){
-        harvestServiceImpl.deleteHarvest(id);
+        harvestService.deleteHarvest(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/field/{fieldId}")
+    public ResponseEntity<List<HarvestVM>> getHarvestsByFieldId(@PathVariable Long fieldId){
+        List<HarvestVM> harvests = harvestService.getHarvestsByFieldId(fieldId);
+        return new ResponseEntity<>(harvests, HttpStatus.OK);
     }
 
 }

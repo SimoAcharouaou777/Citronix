@@ -43,6 +43,11 @@ public class HarvestServiceImpl implements HarvestService{
         Field field = fieldRepository.findById(harvestVM.getFieldId())
                 .orElseThrow(() -> new RuntimeException("Field not found"));
 
+        List<Tree> trees = treeRepository.findByField_Id(field.getId());
+        if(trees.isEmpty()){
+            throw new RuntimeException("field has no planted trees");
+        }
+
         LocalDate harvestDate = harvestVM.getHarvestDate();
         Season season = determineSeason(harvestDate);
 
@@ -50,7 +55,7 @@ public class HarvestServiceImpl implements HarvestService{
             throw new RuntimeException("Harvest already exists for this field and season in the same year");
         }
 
-        List<Tree> trees = treeRepository.findByField_Id(field.getId());
+
         double totalQuantity = trees.stream().mapToDouble(this::calculateTreeProductivity).sum();
 
         Harvest harvest = new Harvest();
@@ -118,6 +123,11 @@ public class HarvestServiceImpl implements HarvestService{
         Field newField = fieldRepository.findById(harvestVM.getFieldId())
                 .orElseThrow(() -> new RuntimeException("Field not found"));
 
+        List<Tree> trees = treeRepository.findByField_Id(newField.getId());
+        if(trees.isEmpty()){
+            throw new RuntimeException("field has no planted trees");
+        }
+
         LocalDate harvestDate = harvestVM.getHarvestDate();
         Season season = determineSeason(harvestDate);
 
@@ -131,7 +141,7 @@ public class HarvestServiceImpl implements HarvestService{
 
         harvestDetailService.deleteHarvestDetailsByHarvestId(existingHarvest.getId());
 
-        List<Tree> trees = treeRepository.findByField_Id(newField.getId());
+
         double totalQuantity = trees.stream().mapToDouble(this::calculateTreeProductivity).sum();
         existingHarvest.setTotalQuantity(totalQuantity);
 
@@ -153,5 +163,11 @@ public class HarvestServiceImpl implements HarvestService{
         Harvest harvest = harvestRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("harvest not found"));
         harvestRepository.delete(harvest);
+    }
+
+    @Override
+    public List<HarvestVM> getHarvestsByFieldId(Long fieldId) {
+        List<Harvest> harvests = harvestRepository.findByField_Id(fieldId);
+        return harvests.stream().map(harvestMapper::harvestToHarvestVM).collect(Collectors.toList());
     }
 }
