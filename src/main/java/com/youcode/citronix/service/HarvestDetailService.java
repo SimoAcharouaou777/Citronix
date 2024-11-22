@@ -13,4 +13,7 @@ public interface HarvestDetailService {
     HarvestDetailVM getHarvestDetailById(Long id);
 
     void deleteHarvestDetail(Long id);
+
+    List<HarvestDetailVM> getHarvestDetailsByHarvestId(Long harvestId);
+    void deleteHarvestDetailsByHarvestId(Long harvestId);
 }

@@ -7,6 +7,7 @@ import com.youcode.citronix.repository.FieldRepository;
 import com.youcode.citronix.repository.HarvestDetailRepository;
 import com.youcode.citronix.repository.HarvestRepository;
 import com.youcode.citronix.repository.TreeRepository;
+import com.youcode.citronix.vm.HarvestDetailVM;
 import com.youcode.citronix.vm.HarvestVM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,11 +31,11 @@ public class HarvestServiceImpl implements HarvestService{
     private TreeRepository treeRepository;
 
     @Autowired
-    private HarvestDetailRepository harvestDetailRepository;
+    private HarvestDetailService harvestDetailService;
 
 
     private final HarvestMapper harvestMapper = HarvestMapper.INSTANCE;
-    private final HarvestDetailMapper harvestDetailMapper = HarvestDetailMapper.INSTANCE;
+
 
 
     @Override
@@ -60,11 +61,11 @@ public class HarvestServiceImpl implements HarvestService{
         Harvest savedHarvest = harvestRepository.save(harvest);
 
         for(Tree tree : trees){
-            HarvestDetail harvestDetail = new HarvestDetail();
-            harvestDetail.setHarvest(savedHarvest);
-            harvestDetail.setTree(tree);
-            harvestDetail.setQuantityHarvested(calculateTreeProductivity(tree));
-            harvestDetailRepository.save(harvestDetail);
+            HarvestDetailVM harvestDetailVM = new HarvestDetailVM();
+            harvestDetailVM.setHarvestId(savedHarvest.getId());
+            harvestDetailVM.setTreeId(tree.getId());
+            harvestDetailVM.setQuantityHarvested(calculateTreeProductivity(tree));
+            harvestDetailService.createHarvestDetail(harvestDetailVM);
         }
 
         return harvestMapper.harvestToHarvestVM(savedHarvest);
@@ -114,28 +115,35 @@ public class HarvestServiceImpl implements HarvestService{
         Harvest existingHarvest = harvestRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("harvest not found"));
 
+        Field newField = fieldRepository.findById(harvestVM.getFieldId())
+                .orElseThrow(() -> new RuntimeException("Field not found"));
+
         LocalDate harvestDate = harvestVM.getHarvestDate();
         Season season = determineSeason(harvestDate);
 
-        if(!existingHarvest.getSeason().equals(harvestVM.getSeason()) &&
-                harvestRepository.existsByField_IdAndSeasonAndHarvestDateYear(existingHarvest.getField().getId(), season,harvestDate.getYear() )){
+        if(!existingHarvest.getSeason().equals(season) &&
+                harvestRepository.existsByField_IdAndSeasonAndHarvestDateYear(newField.getId(),season,harvestDate.getYear() )){
             throw new RuntimeException("Harvest already exists for this field and season in the same year");
         }
+        existingHarvest.setField(newField);
         existingHarvest.setHarvestDate(harvestDate);
         existingHarvest.setSeason(season);
 
-        List<Tree> trees = treeRepository.findByField_Id(existingHarvest.getField().getId());
+        harvestDetailService.deleteHarvestDetailsByHarvestId(existingHarvest.getId());
+
+        List<Tree> trees = treeRepository.findByField_Id(newField.getId());
         double totalQuantity = trees.stream().mapToDouble(this::calculateTreeProductivity).sum();
         existingHarvest.setTotalQuantity(totalQuantity);
 
         Harvest updatedHarvest = harvestRepository.save(existingHarvest);
-        harvestDetailRepository.deleteAll(existingHarvest.getHarvestDetails());
+
+
         for (Tree tree : trees){
-            HarvestDetail harvestDetail = new HarvestDetail();
-            harvestDetail.setHarvest(updatedHarvest);
-            harvestDetail.setTree(tree);
-            harvestDetail.setQuantityHarvested(calculateTreeProductivity(tree));
-            harvestDetailRepository.save(harvestDetail);
+            HarvestDetailVM harvestDetailVM = new HarvestDetailVM();
+            harvestDetailVM.setHarvestId(updatedHarvest.getId());
+            harvestDetailVM.setTreeId(tree.getId());
+            harvestDetailVM.setQuantityHarvested(calculateTreeProductivity(tree));
+            harvestDetailService.createHarvestDetail(harvestDetailVM);
         }
         return harvestMapper.harvestToHarvestVM(updatedHarvest);
     }

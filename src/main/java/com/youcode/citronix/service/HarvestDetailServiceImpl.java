@@ -38,22 +38,12 @@ public class HarvestDetailServiceImpl implements HarvestDetailService{
         Tree tree = treeRepository.findById(harvestDetailVM.getTreeId())
                 .orElseThrow(() -> new RuntimeException("Tree not found"));
 
-        int treeAge = Period.between(tree.getPlantingDate(), LocalDate.now()).getYears();
-        if(treeAge > 20){
-            throw new RuntimeException("Tree is too old to be harvested");
-        }
-
-        if(harvestDetailRepository.existsByTree_IdAndHarvest_Season(tree.getId(), harvest.getSeason())){
-            throw new RuntimeException("Tree is already harvested for this season");
-        }
-        HarvestDetail harvestDetail = harvestDetailMapper.harvestDetailVMToHarvestDetail(harvestDetailVM);
+        HarvestDetail harvestDetail = new HarvestDetail();
         harvestDetail.setHarvest(harvest);
         harvestDetail.setTree(tree);
-
-        harvest.setTotalQuantity(harvest.getTotalQuantity() + harvestDetail.getQuantityHarvested());
-        harvestRepository.save(harvest);
-
+        harvestDetail.setQuantityHarvested(harvestDetailVM.getQuantityHarvested());
         HarvestDetail savedDetail = harvestDetailRepository.save(harvestDetail);
+
         return harvestDetailMapper.harvestDetailToHarvestDetailVM(savedDetail);
     }
 
@@ -75,9 +65,21 @@ public class HarvestDetailServiceImpl implements HarvestDetailService{
         HarvestDetail detail = harvestDetailRepository.findById(id)
                         .orElseThrow(() -> new RuntimeException("Harvest detail not found"));
 
-        Harvest harvest = detail.getHarvest();
-        harvest.setTotalQuantity(harvest.getTotalQuantity() - detail.getQuantityHarvested());
-        harvestRepository.save(harvest);
         harvestDetailRepository.delete(detail);
     }
+
+    @Override
+    public List<HarvestDetailVM> getHarvestDetailsByHarvestId(Long harvestId) {
+        return harvestDetailRepository.findAllByHarvestId(harvestId)
+                .stream()
+                .map(harvestDetailMapper::harvestDetailToHarvestDetailVM)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void deleteHarvestDetailsByHarvestId(Long harvestId) {
+        List<HarvestDetail> details = harvestDetailRepository.findAllByHarvestId(harvestId);
+        harvestDetailRepository.deleteAll(details);
+    }
+
 }
