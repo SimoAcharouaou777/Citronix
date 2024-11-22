@@ -26,7 +26,7 @@ public class Farm {
     @Column(name = "size" , nullable = false)
     private Double size;
 
-    @Column(name = "creationDate", nullable = false)
+    @Column(name = "creation_date", nullable = false)
     private LocalDate creationDate;
 
     @OneToMany(mappedBy = "farm", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

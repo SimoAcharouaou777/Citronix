@@ -30,6 +30,11 @@ public class Sale {
     @Column(name = "unit_price" , nullable = false)
     private Double unitPrice;
 
-    @Column(name = "total_revenue" , nullable = false)
-    private Double totalRevenue;
+    @Column(name = "quantity_sold" , nullable = false)
+    private Double quantitySold;
+
+    @Transient
+    public Double getTotalRevenue() {
+        return this.quantitySold * this.unitPrice;
+    }
 }
