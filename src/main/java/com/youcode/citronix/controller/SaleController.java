@@ -15,29 +15,35 @@ import java.util.List;
 public class SaleController {
 
     @Autowired
-    private SalesServiceImpl salesServiceImpl;
+    private SaleService saleService;
 
     @PostMapping
     public ResponseEntity<SaleVM> createSale(@RequestBody SaleVM saleVM){
-        SaleVM createdSale = salesServiceImpl.createSale(saleVM);
+        SaleVM createdSale = saleService.createSale(saleVM);
         return new ResponseEntity<>(createdSale, HttpStatus.CREATED);
     }
 
     @GetMapping
     public ResponseEntity<List<SaleVM>> getAllSales(){
-        List<SaleVM> sales = salesServiceImpl.getAllSales();
+        List<SaleVM> sales = saleService.getAllSales();
         return new ResponseEntity<>(sales, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<SaleVM> getSaleById(@PathVariable Long id){
-        SaleVM sale = salesServiceImpl.getSaleById(id);
+        SaleVM sale = saleService.getSaleById(id);
         return new ResponseEntity<>(sale, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteSale(@PathVariable Long id){
-        salesServiceImpl.deleteSale(id);
+        saleService.deleteSale(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<SaleVM> updateSale(@PathVariable Long id, @RequestBody SaleVM saleVM ){
+        SaleVM updatedSale = saleService.updateSale(id, saleVM);
+        return new ResponseEntity<>(updatedSale, HttpStatus.OK);
     }
 }

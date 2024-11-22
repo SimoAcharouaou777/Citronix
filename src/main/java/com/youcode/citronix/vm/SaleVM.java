@@ -14,5 +14,8 @@ public class SaleVM {
     private LocalDate saleDate;
     private Double unitPrice;
     private Double quantitySold;
-    private Double totalRevenue;
+
+    public Double getTotalRevenue(){
+        return this.quantitySold * this.unitPrice;
+    }
 }

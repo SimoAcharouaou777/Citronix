@@ -10,4 +10,5 @@ public interface SaleService {
     List<SaleVM> getAllSales();
     SaleVM getSaleById(Long id);
     void deleteSale(Long id);
+    SaleVM updateSale(Long id, SaleVM saleVM);
 }
