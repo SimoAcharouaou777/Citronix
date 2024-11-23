@@ -11,8 +11,10 @@ public interface SaleMapper {
 
     SaleMapper INSTANCE = Mappers.getMapper(SaleMapper.class);
 
-    @Mapping(target = "totalRevenue", expression = "java(sale.getQuantitySold() * sale.getUnitPrice())")
+
+    @Mapping(source = "harvest.id", target = "harvestId")
     SaleVM saleToSaleVM(Sale sale);
 
+    @Mapping(source = "harvestId", target = "harvest.id")
     Sale saleVMToSale(SaleVM saleVM);
 }

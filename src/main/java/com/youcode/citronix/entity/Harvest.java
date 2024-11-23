@@ -1,5 +1,6 @@
 package com.youcode.citronix.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,6 +20,7 @@ public class Harvest {
 
     @ManyToOne
     @JoinColumn(name = "field_id" , nullable = false)
+    @JsonIgnore
     private Field field;
 
     @Enumerated(EnumType.STRING)
