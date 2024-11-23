@@ -39,8 +39,8 @@ public class HarvestServiceImpl implements HarvestService{
 
 
     @Override
-    public HarvestVM createHarvest(HarvestVM harvestVM) {
-        Field field = fieldRepository.findById(harvestVM.getFieldId())
+    public HarvestVM createHarvest(Long fieldId,HarvestVM harvestVM) {
+        Field field = fieldRepository.findById(fieldId)
                 .orElseThrow(() -> new RuntimeException("Field not found"));
 
         List<Tree> trees = treeRepository.findByField_Id(field.getId());
@@ -51,7 +51,7 @@ public class HarvestServiceImpl implements HarvestService{
         LocalDate harvestDate = harvestVM.getHarvestDate();
         Season season = determineSeason(harvestDate);
 
-        if(harvestRepository.existsByField_IdAndSeasonAndHarvestDateYear(field.getId(), season,harvestDate.getYear())){
+        if(harvestRepository.existsByFieldIdAndSeasonAndHarvestDateYear(field.getId(), season,harvestDate.getYear())){
             throw new RuntimeException("Harvest already exists for this field and season in the same year");
         }
 
@@ -59,7 +59,6 @@ public class HarvestServiceImpl implements HarvestService{
         double totalQuantity = trees.stream().mapToDouble(this::calculateTreeProductivity).sum();
 
         Harvest harvest = new Harvest();
-        harvest.setField(field);
         harvest.setSeason(season);
         harvest.setHarvestDate(harvestDate);
         harvest.setTotalQuantity(totalQuantity);
@@ -132,10 +131,10 @@ public class HarvestServiceImpl implements HarvestService{
         Season season = determineSeason(harvestDate);
 
         if(!existingHarvest.getSeason().equals(season) &&
-                harvestRepository.existsByField_IdAndSeasonAndHarvestDateYear(newField.getId(),season,harvestDate.getYear() )){
+                harvestRepository.existsByFieldIdAndSeasonAndHarvestDateYear(newField.getId(),season,harvestDate.getYear() )){
             throw new RuntimeException("Harvest already exists for this field and season in the same year");
         }
-        existingHarvest.setField(newField);
+
         existingHarvest.setHarvestDate(harvestDate);
         existingHarvest.setSeason(season);
 
@@ -167,7 +166,7 @@ public class HarvestServiceImpl implements HarvestService{
 
     @Override
     public List<HarvestVM> getHarvestsByFieldId(Long fieldId) {
-        List<Harvest> harvests = harvestRepository.findByField_Id(fieldId);
+        List<Harvest> harvests = harvestRepository.findByFieldId(fieldId);
         return harvests.stream().map(harvestMapper::harvestToHarvestVM).collect(Collectors.toList());
     }
 }

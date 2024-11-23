@@ -17,9 +17,6 @@ public class Harvest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "field_id" , nullable = false)
-    private Field field;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "season" , nullable = false)

@@ -11,9 +11,7 @@ public interface HarvestMapper {
 
     HarvestMapper INSTANCE = Mappers.getMapper(HarvestMapper.class);
 
-    @Mapping(source = "field.id", target = "fieldId")
     HarvestVM harvestToHarvestVM(Harvest harvest);
 
-    @Mapping(source = "fieldId", target = "field.id")
     Harvest harvestVMToHarvest(HarvestVM harvestVM);
 }

@@ -18,9 +18,9 @@ public class HarvestController {
     @Autowired
     private HarvestService harvestService;
 
-    @PostMapping
-    public ResponseEntity<HarvestVM> createHarvest(@RequestBody HarvestVM harvestVM){
-        HarvestVM createdHarvest = harvestService.createHarvest(harvestVM);
+    @PostMapping("{fieldId}")
+    public ResponseEntity<HarvestVM> createHarvest(@PathVariable Long fieldId,@RequestBody HarvestVM harvestVM){
+        HarvestVM createdHarvest = harvestService.createHarvest(fieldId,harvestVM);
         return new ResponseEntity<>(createdHarvest, HttpStatus.CREATED);
     }
 
