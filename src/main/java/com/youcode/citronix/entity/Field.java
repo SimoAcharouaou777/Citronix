@@ -1,5 +1,6 @@
 package com.youcode.citronix.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,6 +19,7 @@ public class Field {
 
     @ManyToOne
     @JoinColumn(name = "farm_id" , nullable = false)
+    @JsonBackReference
     private Farm farm;
 
     @Column(name = "size" , nullable = false)

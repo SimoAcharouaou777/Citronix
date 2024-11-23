@@ -1,5 +1,6 @@
 package com.youcode.citronix.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,14 +19,15 @@ public class Tree {
 
     @ManyToOne
     @JoinColumn(name = "field_id" , nullable = false)
+    @JsonIgnore
     private Field field;
 
-    @Column(name = "plantingDate" , nullable = false)
+    @Column(name = "planting_date" , nullable = false)
     private LocalDate plantingDate;
 
     @Column(name = "age" , nullable = false)
     private Integer age;
 
-    @Column(name = "productivityRate" , nullable = false)
+    @Column(name = "productivity_rate" , nullable = false)
     private Double productivityRate;
 }

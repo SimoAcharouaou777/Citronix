@@ -1,5 +1,6 @@
 package com.youcode.citronix.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,6 +21,7 @@ public class HarvestDetail {
 
     @ManyToOne
     @JoinColumn(name = "harvest_id" , nullable = false)
+    @JsonIgnore
     private Harvest harvest;
 
     @Column(name = "quantity_harvested" , nullable = false)

@@ -1,0 +1,321 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: "SimoAcharouaou"
+      changes:
+        - createTable:
+            tableName: "farms"
+            columns:
+              - column:
+                  name: "id"
+                  type: "BIGINT"
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: "name"
+                  type: "VARCHAR(255)"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "location"
+                  type: "VARCHAR(255)"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "size"
+                  type: "DOUBLE"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "creation_date"
+                  type: "DATE"
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 2
+      author: "SimoAcharouaou"
+      changes:
+        - createTable:
+            tableName: "fields"
+            columns:
+              - column:
+                  name: "id"
+                  type: "BIGINT"
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: "farm_id"
+                  type: "BIGINT"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "size"
+                  type: "DOUBLE"
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: "fields"
+            baseColumnNames: "farm_id"
+            constraintName: "fk_fields_farm"
+            referencedTableName: farms
+            referencedColumnNames: id
+
+  - changeSet:
+      id: 3
+      author: "SimoAcharouaou"
+      changes:
+        - createTable:
+            tableName: "trees"
+            columns:
+              - column:
+                  name: "id"
+                  type: "BIGINT"
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: "field_id"
+                  type: "BIGINT"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "planting_date"
+                  type: "DATE"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "age"
+                  type: "INTEGER"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "productivity_rate"
+                  type: "DOUBLE"
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: "trees"
+            baseColumnNames: "field_id"
+            constraintName: "fk_trees_field"
+            referencedTableName: "fields"
+            referencedColumnNames: "id"
+
+  - changeSet:
+      id: 4
+      author: "SimoAcharouaou"
+      changes:
+        - createTable:
+            tableName: "harvests"
+            columns:
+              - column:
+                  name: "id"
+                  type: "BIGINT"
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: "field_id"
+                  type: "BIGINT"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "season"
+                  type: "VARCHAR(255)"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "harvest_date"
+                  type: "DATE"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "total_quantity"
+                  type: "DOUBLE"
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: "harvests"
+            baseColumnNames: "field_id"
+            constraintName: "fk_harvests_field"
+            referencedTableName: "fields"
+            referencedColumnNames: "id"
+
+  - changeSet:
+      id: 5
+      author: "SimoAcharouaou"
+      changes:
+        - createTable:
+            tableName: "harvest_details"
+            columns:
+              - column:
+                  name: "id"
+                  type: "BIGINT"
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: "tree_id"
+                  type: "BIGINT"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "harvest_id"
+                  type: "BIGINT"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "quantity_harvested"
+                  type: "DOUBLE"
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: "harvest_details"
+            baseColumnNames: "tree_id"
+            constraintName: "fk_harvest_details_tree"
+            referencedTableName: "trees"
+            referencedColumnNames: "id"
+        - addForeignKeyConstraint:
+            baseTableName: "harvest_details"
+            baseColumnNames: "harvest_id"
+            constraintName: "fk_harvest_details_harvest"
+            referencedTableName: "harvests"
+            referencedColumnNames: "id"
+
+  - changeSet:
+      id: 6
+      author: "SimoAcharouaou"
+      changes:
+        - createTable:
+            tableName: "sales"
+            columns:
+              - column:
+                  name: "id"
+                  type: "BIGINT"
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: "harvest_id"
+                  type: "BIGINT"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "client_name"
+                  type: "VARCHAR(255)"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "sale_date"
+                  type: "DATE"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "unit_price"
+                  type: "DOUBLE"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "quantity_sold"
+                  type: "DOUBLE"
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: "sales"
+            baseColumnNames: "harvest_id"
+            constraintName: "fk_sales_harvest"
+            referencedTableName: "harvests"
+            referencedColumnNames: "id"
+
+  - changeSet:
+      id: 7
+      author: "SimoAcharouaou"
+      changes:
+        - createTable:
+            tableName: "roles"
+            columns:
+              - column:
+                  name: "id"
+                  type: "BIGINT"
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: "name"
+                  type: "VARCHAR(255)"
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 8
+      author: "SimoAcharouaou"
+      changes:
+        - createTable:
+            tableName: "users"
+            columns:
+              - column:
+                  name: "id"
+                  type: "BIGINT"
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: "username"
+                  type: "VARCHAR(255)"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "password"
+                  type: "VARCHAR(255)"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "firstName"
+                  type: "VARCHAR(255)"
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "lastName"
+                  type: "VARCHAR(255)"
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 9
+      author: "SimoAcharouaou"
+      changes:
+        - createTable:
+            tableName: "users_roles"
+            columns:
+              - column:
+                  name: "user_id"
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: "role_id"
+                  type: "BIGINT"
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: "users_roles"
+            baseColumnNames: "user_id"
+            constraintName: "fk_users_roles_user"
+            referencedTableName: "users"
+            referencedColumnNames: "id"
+        - addForeignKeyConstraint:
+            baseTableName: "users_roles"
+            baseColumnNames: "role_id"
+            constraintName: "fk_users_roles_role"
+            referencedTableName: "roles"
+            referencedColumnNames: "id"

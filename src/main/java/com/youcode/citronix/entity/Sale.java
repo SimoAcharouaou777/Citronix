@@ -1,6 +1,7 @@
 package com.youcode.citronix.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,6 +20,7 @@ public class Sale {
 
     @ManyToOne
     @JoinColumn(name = "harvest_id", nullable = false)
+    @JsonIgnore
     private Harvest harvest;
 
     @Column(name = "client_name" , nullable = false)
@@ -30,6 +32,12 @@ public class Sale {
     @Column(name = "unit_price" , nullable = false)
     private Double unitPrice;
 
-    @Column(name = "total_revenue" , nullable = false)
-    private Double totalRevenue;
+    @Column(name = "quantity_sold" , nullable = false)
+    private Double quantitySold;
+
+
+    @Transient
+    public Double getTotalRevenue() {
+        return this.quantitySold * this.unitPrice;
+    }
 }

@@ -1,5 +1,6 @@
 package com.youcode.citronix.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,6 +20,7 @@ public class Harvest {
 
     @ManyToOne
     @JoinColumn(name = "field_id" , nullable = false)
+    @JsonIgnore
     private Field field;
 
     @Enumerated(EnumType.STRING)
@@ -29,10 +31,25 @@ public class Harvest {
     private LocalDate harvestDate;
 
     @Column(name = "total_quantity" , nullable = false)
-    private Double totalQuantity;
+    private Double totalQuantity = 0.0;
 
     @OneToMany(mappedBy = "harvest", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<HarvestDetail> harvestDetails;
 
+    public void addToTotalQuantity(Double quantity) {
+        if(quantity == null || quantity < 0) {
+            throw new IllegalArgumentException("Quantity must be a positive number");
+        }
+        this.totalQuantity += quantity;
+    }
+    public void subtractFromTotalQuantity(Double quantity) {
+        if(quantity == null || quantity < 0) {
+            throw new IllegalArgumentException("Quantity must be a positive number");
+        }
+        this.totalQuantity -= quantity;
+        if(this.totalQuantity < 0) {
+            this.totalQuantity = 0.0;
+        }
+    }
 
 }
