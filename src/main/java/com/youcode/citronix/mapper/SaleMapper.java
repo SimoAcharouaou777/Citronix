@@ -12,7 +12,9 @@ public interface SaleMapper {
     SaleMapper INSTANCE = Mappers.getMapper(SaleMapper.class);
 
 
+    @Mapping(source = "harvest.id", target = "harvestId")
     SaleVM saleToSaleVM(Sale sale);
 
+    @Mapping(source = "harvestId", target = "harvest.id")
     Sale saleVMToSale(SaleVM saleVM);
 }
