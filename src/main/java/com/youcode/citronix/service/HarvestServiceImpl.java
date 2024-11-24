@@ -119,7 +119,7 @@ public class HarvestServiceImpl implements HarvestService{
         Harvest existingHarvest = harvestRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("harvest not found"));
 
-        Field newField = fieldRepository.findById(harvestVM.getFieldId())
+        Field newField = fieldRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Field not found"));
 
         List<Tree> trees = treeRepository.findByField_Id(newField.getId());

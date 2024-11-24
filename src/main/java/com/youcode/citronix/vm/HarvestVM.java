@@ -11,7 +11,7 @@ import java.time.LocalDate;
 public class HarvestVM {
 
     private Long id;
-    private Long fieldId;
+//    private Long fieldId;
     private Season season;
     private LocalDate harvestDate;
     private Double totalQuantity;
