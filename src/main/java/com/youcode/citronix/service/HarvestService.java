@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface HarvestService {
 
-    HarvestVM createHarvest(HarvestVM harvestVM);
+    HarvestVM createHarvest(Long id,HarvestVM harvestVM);
 
     List<HarvestVM> getAllHarvests();
 
