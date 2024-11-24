@@ -10,15 +10,23 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface HarvestRepository extends JpaRepository<Harvest,Long> {
+public interface HarvestRepository extends JpaRepository<Harvest, Long> {
 
-    @Query("SELECT COUNT (h) FROM  Harvest h WHERE h.field.id = :fieldId AND h.season = :season")
-    long countByFieldAndSeason(@Param("fieldId") Long fieldId, @Param("season")Season season);
+    @Query("SELECT COUNT(h) FROM Harvest h " +
+            "JOIN HarvestDetail hd ON hd.harvest.id = h.id " +
+            "JOIN Tree t ON t.id = hd.tree.id " +
+            "WHERE t.field.id = :fieldId AND h.season = :season")
+    long countByFieldAndSeason(@Param("fieldId") Long fieldId, @Param("season") Season season);
 
-    boolean existsByField_IdAndSeason(Long fieldId, Season season);
+    @Query("SELECT COUNT(h) > 0 FROM Harvest h " +
+            "JOIN HarvestDetail hd ON hd.harvest.id = h.id " +
+            "JOIN Tree t ON t.id = hd.tree.id " +
+            "WHERE t.field.id = :fieldId AND h.season = :season AND EXTRACT(YEAR FROM h.harvestDate) = :year")
+    boolean existsByFieldIdAndSeasonAndHarvestDateYear(@Param("fieldId") Long fieldId, @Param("season") Season season, @Param("year") int year);
 
-    @Query("SELECT  COUNT (h) > 0 FROM Harvest h WHERE h.field.id = :fieldId AND h.season = :season AND YEAR(h.harvestDate) = :year")
-    boolean existsByField_IdAndSeasonAndHarvestDateYear(@Param("fieldId") Long fieldId, @Param("season") Season season, @Param("year") int Year);
-
-    List<Harvest> findByField_Id(Long fieldId);
+    @Query("SELECT DISTINCT h FROM Harvest h " +
+            "JOIN HarvestDetail hd ON hd.harvest.id = h.id " +
+            "JOIN Tree t ON t.id = hd.tree.id " +
+            "WHERE t.field.id = :fieldId")
+    List<Harvest> findByFieldId(@Param("fieldId") Long fieldId);
 }

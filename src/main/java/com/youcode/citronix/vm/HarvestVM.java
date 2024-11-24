@@ -12,7 +12,7 @@ import java.time.LocalDate;
 public class HarvestVM {
 
     private Long id;
-    private Long fieldId;
+//    private Long fieldId;
     private Season season;
     @PastOrPresent(message = "harvest date cannot be in the future")
     private LocalDate harvestDate;
